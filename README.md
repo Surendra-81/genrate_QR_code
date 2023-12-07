@@ -21,7 +21,7 @@ This project is a simple QR Code generator that allows users to generate QR code
 
     ```bash
     git clone https://github.com/your-username/qr-code-generator.git
-    ```
+ # create the public folder and put the index.html and script.js in it. for follow the path as given in servr.js```
 
 2. Install dependencies:
 
