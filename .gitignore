@@ -1,0 +1,12 @@
+# Node.js
+node_modules/
+
+# Visual Studio Code
+.vscode/
+
+# Compiled files
+dist/
+build/
+
+# Environment variables
+.env

@@ -1,0 +1,86 @@
+<!-- public/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title>QR Code Generator</title>
+</head>
+<body class="container mt-5">
+    <h1 class="mb-4">QR Code Generator</h1>
+    
+    <div class="form-group">
+        <label for="data-input">Enter data:</label>
+        <input type="text" id="data-input" class="form-control" placeholder="Enter URL, phone number, or text">
+    </div>
+
+    <button class="btn btn-primary" onclick="generateQRCode()">Generate QR Code</button>
+
+    <div id="qrcode-container" class="mt-4">
+        <!-- Container for the generated QR code -->
+    </div>
+
+    <div id="error-message" class="text-danger mt-2">
+        <!-- Container for error messages -->
+    </div>
+
+    <div class="mt-3">
+        <label for="qr-title">QR Code Title:</label>
+        <input type="text" id="qr-title" class="form-control" placeholder="Enter QR code title">
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="/script.js"></script>
+</body>
+<script>
+    function generateQRCode() {
+    const dataInput = document.getElementById('data-input');
+    const qrcodeContainer = document.getElementById('qrcode-container');
+    const errorMessageContainer = document.getElementById('error-message');
+    const qrTitleInput = document.getElementById('qr-title');
+
+    const data = dataInput.value;
+    const qrTitle = qrTitleInput.value || 'Scan Me'; // Default title /As per User
+
+
+    // Clear previous QR code and error messages
+    qrcodeContainer.innerHTML = '';
+    errorMessageContainer.innerHTML = '';
+
+    if (!data) {
+        errorMessageContainer.innerText = 'Please enter data to generate QR code.';
+        return;
+    }
+
+    fetch('/generate', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ data }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Append the generated QR code to the container
+        const img = document.createElement('img');
+        img.src = data.qrCode;
+        img.alt = 'QR Code';
+        img.style.width = '200px'; 
+        qrcodeContainer.appendChild(img);
+
+        // Add a title below the QR code
+        const title = document.createElement('p');
+        title.innerText = qrTitle;
+        title.style.textAlign = 'center';
+        qrcodeContainer.appendChild(title);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        errorMessageContainer.innerText = 'Error generating QR code.';
+    });
+}
+</script>
+</html>
